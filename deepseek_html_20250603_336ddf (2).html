@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancient Math Temple</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to bottom, #1a120b, #3c2a21, #1a120b);
+        min-height: 100vh;
+        color: #e6d5b8;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Ancient texture background */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.2) 0%, transparent 20%),
+            radial-gradient(circle at 90% 80%, rgba(160, 82, 45, 0.2) 0%, transparent 20%),
+            radial-gradient(circle at 50% 50%, rgba(101, 67, 33, 0.1) 0%, transparent 30%);
+        background-repeat: no-repeat;
+        background-size: cover;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .temple-decoration {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 120px;
+        background: linear-gradient(to top, #3c2a21, transparent);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .pillar {
+        position: fixed;
+        bottom: 0;
+        width: 50px;
+        height: 200px;
+        background: linear-gradient(to right, #d4a373, #bc6c25, #d4a373);
+        border: 2px solid #bc6c25;
+        z-index: 1;
+    }
+
+    .pillar-left {
+        left: 20%;
+    }
+
+    .pillar-right {
+        right: 20%;
+    }
+
+    .pillar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 60px;
+        height: 30px;
+        background: #bc6c25;
+        left: -5px;
+        border-radius: 5px;
+    }
+
+    /* Login screen styles */
+    .login-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 500px;
+        background: rgba(60, 42, 33, 0.95);
+        border-radius: 15px;
+        padding: 40px;
+        backdrop-filter: blur(8px);
+        border: 3px solid #d4a373;
+        box-shadow: 0 0 30px rgba(212, 163, 115, 0.5);
+        z-index: 1000;
+        text-align: center;
+    }
+
+    .login-container h2 {
+        font-size: 2.5em;
+        margin-bottom: 30px;
+        color: #ffd700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #d4a373;
+        font-size: 1.2rem;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        background: rgba(40, 28, 21, 0.8);
+        border: 2px solid #d4a373;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        color: #e6d5b8;
+        transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+
+    .login-btn {
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        background: linear-gradient(45deg, #d4a373, #bc6c25);
+        color: #1a120b;
+        border: 2px solid #ffd700;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(212, 163, 115, 0.5);
+    }
+
+    .toggle-form {
+        margin-top: 20px;
+        color: #e6d5b8;
+        font-size: 1rem;
+    }
+
+    .toggle-form a {
+        color: #ffd700;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .toggle-form a:hover {
+        text-decoration: underline;
+    }
+
+    /* Game container */
+    .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        background: rgba(60, 42, 33, 0.85);
+        border-radius: 15px;
+        padding: 30px;
+        backdrop-filter: blur(8px);
+        border: 3px solid #d4a373;
+        box-shadow: 0 0 30px rgba(212, 163, 115, 0.3);
+        position: relative;
+        z-index: 2;
+        display: none; /* Hidden by default */
+    }
+
+    .hieroglyph-border {
+        position: absolute;
+        width: 100%;
+        height: 40px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" viewBox="0 0 100 20"><path d="M5,10 Q15,5 25,10 T45,10 T65,10 T85,10" stroke="%23d4a373" fill="none" stroke-width="1.5"/><circle cx="10" cy="10" r="1" fill="%23d4a373"/><circle cx="30" cy="10" r="1" fill="%23d4a373"/><circle cx="50" cy="10" r="1" fill="%23d4a373"/><circle cx="70" cy="10" r="1" fill="%23d4a373"/><circle cx="90" cy="10" r="1" fill="%23d4a373"/></svg>') repeat-x;
+        background-size: 100px 20px;
+    }
+
+    .border-top {
+        top: -20px;
+    }
+
+    .border-bottom {
+        bottom: -20px;
+        transform: rotate(180deg);
+    }
+
+    /* Animated title */
+    h1 {
+        text-align: center;
+        font-size: 3.2em;
+        margin: 10px 0;
+        text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
+        background: linear-gradient(45deg, #d4a373, #ffd700, #d4a373, #ffd700);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 4s ease-in-out infinite;
+        font-weight: 800;
+        letter-spacing: 2px;
+        position: relative;
+    }
+
+    h1::after {
+        content: "𓋴𓄿𓏏𓏭𓀭";
+        position: absolute;
+        bottom: -25px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 1.5rem;
+        opacity: 0.6;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 1.3em;
+        margin: 30px 0;
+        color: #e6d5b8;
+        font-style: italic;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .stats-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .stat-button {
+        flex: 1;
+        min-width: 200px;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: default;
+        transition: all 0.3s ease;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        background: rgba(75, 55, 45, 0.8);
+        color: #ffd700;
+        border: 2px solid #d4a373;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: 0.5s;
+    }
+
+    .stat-button:hover::before {
+        left: 100%;
+    }
+
+    .rank-button {
+        background: linear-gradient(45deg, #bc6c25, #d4a373);
+        color: #1a120b;
+        border: 2px solid #ffd700;
+    }
+
+    .level-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+
+    .level-btn {
+        padding: 15px 25px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(75, 55, 45, 0.9);
+        color: #e6d5b8;
+        border: 2px solid #d4a373;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .level-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(212, 163, 115, 0.5);
+        background: rgba(90, 70, 50, 0.9);
+    }
+
+    .level-btn.active {
+        background: linear-gradient(45deg, #d4a373, #bc6c25);
+        color: #1a120b;
+        border-color: #ffd700;
+        box-shadow: 0 0 20px rgba(212, 163, 115, 0.7);
+    }
+
+    .equation-display {
+        background: rgba(40, 28, 21, 0.9);
+        border: 3px solid #ffd700;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 40px 0;
+        text-align: center;
+        font-size: 2.8em;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Courier New', monospace;
+    }
+
+    .equation-display::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #d4a373, #ffd700, #d4a373);
+        border-radius: 15px;
+        z-index: -1;
+        animation: borderGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes borderGlow {
+        from { box-shadow: 0 0 20px rgba(212, 163, 115, 0.5); }
+        to { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin: 30px 0;
+    }
+
+    .control-panel {
+        background: rgba(75, 55, 45, 0.7);
+        border-radius: 15px;
+        padding: 25px;
+        border: 2px solid #d4a373;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .panel-title {
+        text-align: center;
+        font-size: 1.4em;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: #ffd700;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .operation-grid, .term-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .operation-btn, .term-btn {
+        padding: 18px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(90, 70, 50, 0.9);
+        color: #e6d5b8;
+        border: 2px solid #d4a373;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .operation-btn:hover, .term-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(212, 163, 115, 0.5);
+        border-color: #ffd700;
+        background: rgba(100, 80, 60, 0.9);
+    }
+
+    .operation-btn.selected, .term-btn.selected {
+        background: linear-gradient(45deg, #bc6c25, #d4a373);
+        border-color: #ffd700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        transform: translateY(-3px);
+        color: #1a120b;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        padding: 18px 35px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.2em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        min-width: 220px;
+    }
+
+    .apply-btn {
+        background: linear-gradient(45deg, #4caf50, #2e7d32);
+        color: white;
+    }
+
+    .apply-btn:hover:not(:disabled) {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(76, 175, 80, 0.5);
+    }
+
+    .apply-btn:disabled {
+        background: rgba(100, 100, 100, 0.5);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .hint-btn {
+        background: linear-gradient(45deg, #ff9800, #ef6c00);
+        color: white;
+    }
+
+    .hint-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(255, 152, 0, 0.5);
+    }
+
+    .next-btn {
+        background: linear-gradient(45deg, #d4a373, #bc6c25);
+        color: white;
+    }
+
+    .next-btn:hover:not(:disabled) {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(212, 163, 115, 0.5);
+    }
+
+    .next-btn:disabled {
+        background: rgba(100, 100, 100, 0.5);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .feedback {
+        text-align: center;
+        padding: 20px;
+        margin: 30px 0;
+        border-radius: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.5s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .feedback.success {
+        background: linear-gradient(45deg, #4caf50, #2e7d32);
+        border: 2px solid #66bb6a;
+        animation: successPulse 0.6s ease-in-out;
+    }
+
+    @keyframes successPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .feedback.error {
+        background: linear-gradient(45deg, #f44336, #c62828);
+        border: 2px solid #ef5350;
+        animation: errorShake 0.6s ease-in-out;
+    }
+
+    @keyframes errorShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
+    }
+
+    .feedback.rank-up {
+        background: linear-gradient(45deg, #ffd700, #d4a373);
+        color: #1a120b;
+        border: 2px solid #bc6c25;
+        animation: epicRankUpCelebration 3s ease-in-out;
+        position: relative;
+        overflow: hidden;
+        font-size: 1.5em;
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes epicRankUpCelebration {
+        0% { 
+            transform: scale(1);
+            box-shadow: 0 0 20px #ffd700;
+        }
+        15% { 
+            transform: scale(1.15) rotate(2deg);
+            box-shadow: 0 0 50px #ffd700, 0 0 80px #d4a373, 0 0 100px #ff9800;
+        }
+        30% { 
+            transform: scale(1.1) rotate(-1deg);
+            box-shadow: 0 0 60px #ffd700, 0 0 90px #d4a373, 0 0 120px #ff9800;
+        }
+        45% { 
+            transform: scale(1.12) rotate(1deg);
+            box-shadow: 0 0 70px #ffd700, 0 0 100px #d4a373, 0 0 140px #ff9800;
+        }
+        60% { 
+            transform: scale(1.08) rotate(-0.5deg);
+            box-shadow: 0 0 80px #ffd700, 0 0 110px #d4a373, 0 0 160px #ff9800;
+        }
+        75% { 
+            transform: scale(1.05) rotate(0.5deg);
+            box-shadow: 0 0 60px #ffd700, 0 0 90px #d4a373, 0 0 120px #ff9800;
+        }
+        90% { 
+            transform: scale(1.02);
+            box-shadow: 0 0 40px #ffd700, 0 0 60px #d4a373, 0 0 80px #ff9800;
+        }
+        100% { 
+            transform: scale(1);
+            box-shadow: 0 0 20px #ffd700;
+        }
+    }
+
+    .steps-container {
+        background: rgba(40, 28, 21, 0.8);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px 0;
+        border-left: 5px solid #d4a373;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .steps-title {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+        color: #ffd700;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        padding-bottom: 10px;
+        border-bottom: 2px solid #d4a373;
+    }
+
+    .steps {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+    }
+
+    .step {
+        margin: 10px 0;
+        font-size: 1.2em;
+        padding: 10px;
+        border-bottom: 1px dashed #d4a373;
+        transition: all 0.3s ease;
+    }
+
+    .step:last-child {
+        border-bottom: none;
+    }
+    
+    .step:hover {
+        background: rgba(90, 70, 50, 0.5);
+        border-radius: 8px;
+    }
+
+    .step-number {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        background: #d4a373;
+        color: #1a120b;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 30px;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+    
+    .step-action {
+        display: inline-block;
+        background: rgba(75, 55, 45, 0.7);
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 0 5px;
+        font-weight: bold;
+        color: #ffd700;
+    }
+
+    /* Sand effect for rank up */
+    .sand-fall {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+    }
+
+    .sand-particle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: #d4a373;
+        border-radius: 50%;
+        animation: sandFall 3s linear forwards;
+    }
+
+    @keyframes sandFall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    /* Equation solved celebration effect */
+    .equation-solved {
+        animation: equationSolved 1.5s ease-in-out;
+    }
+
+    @keyframes equationSolved {
+        0% { 
+            transform: scale(1);
+            border-color: #ffd700;
+        }
+        25% { 
+            transform: scale(1.05);
+            border-color: #4caf50;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
+        }
+        50% { 
+            transform: scale(1.02);
+            border-color: #d4a373;
+            box-shadow: 0 0 40px rgba(212, 163, 115, 0.6);
+        }
+        75% { 
+            transform: scale(1.03);
+            border-color: #ff9800;
+            box-shadow: 0 0 35px rgba(255, 152, 0, 0.6);
+        }
+        100% { 
+            transform: scale(1);
+            border-color: #ffd700;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .controls {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-row {
+            flex-direction: column;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .action-btn {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        .equation-display {
+            font-size: 2.2em;
+            padding: 20px;
+        }
+        
+        .level-buttons {
+            flex-direction: column;
+        }
+    }
+    
+    /* Scrollbar styling */
+    .steps::-webkit-scrollbar {
+        width: 10px;
+    }
+    
+    .steps::-webkit-scrollbar-track {
+        background: rgba(40, 28, 21, 0.5);
+        border-radius: 10px;
+    }
+    
+    .steps::-webkit-scrollbar-thumb {
+        background: #d4a373;
+        border-radius: 10px;
+    }
+    
+    .steps::-webkit-scrollbar-thumb:hover {
+        background: #bc6c25;
+    }
+    </style>
+</head>
+<body>
+    <div class="temple-decoration"></div>
+    <div class="pillar pillar-left"></div>
+    <div class="pillar pillar-right"></div>
+    
+    <!-- Login Screen -->
+    <div class="login-container" id="loginContainer">
+        <h2>𓋴𓄿𓏏𓏭𓀭 Ancient Math Temple 𓋴𓄿𓏏𓏭𓀭</h2>
+        
+        <!-- Login Form -->
+        <div class="login-form" id="loginForm">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="Scribe Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Secret Hieroglyph" required>
+            </div>
+            <button class="login-btn" onclick="login()">Enter the Temple</button>
+            
+            <div class="toggle-form">
+                Don't have an account? <a onclick="showRegisterForm()">Create one</a>
+            </div>
+        </div>
+        
+        <!-- Register Form -->
+        <div class="login-form" id="registerForm" style="display:none;">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="newUsername" placeholder="Choose Scribe Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="newPassword" placeholder="Create Secret Hieroglyph" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="confirmPassword" placeholder="Confirm Secret Hieroglyph" required>
+            </div>
+            <button class="login-btn" onclick="register()">Create Account</button>
+            
+            <div class="toggle-form">
+                Already have an account? <a onclick="showLoginForm()">Login</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Container -->
+    <div class="container" id="gameContainer">
+        <div class="hieroglyph-border border-top"></div>
+        <div class="hieroglyph-border border-bottom"></div>
+        
+        <h1>𓋴𓄿𓏏𓏭𓀭 Ancient Math Temple 𓋴𓄿𓏏𓏭𓀭</h1>
+        <div class="subtitle">Solve algebraic equations to uncover ancient secrets and treasures!</div>
+        
+        <div class="stats-row">
+            <button class="stat-button rank-button" id="rankDisplay">Rank: 𓀀 Apprentice Scribe</button>
+            <button class="stat-button" id="scoreDisplay">Treasure: 𓍯 0</button>
+            <button class="stat-button" id="streakDisplay">Wisdom Streak: 𓀠 0</button>
+            <button class="stat-button" id="hintsDisplay">Scrolls Used: 𓅓 0</button>
+        </div>
+
+        <div class="level-buttons">
+            <button class="level-btn active" onclick="setLevel(1)">Level 1: Simple Tombs (+10 𓍯)</button>
+            <button class="level-btn" onclick="setLevel(2)">Level 2: Temple Chambers (+20 𓍯)</button>
+            <button class="level-btn" onclick="setLevel(3)">Level 3: Pharaoh's Vault (+30 𓍯)</button>
+        </div>
+
+        <div class="equation-display" id="equation">x + 5 = 12</div>
+
+        <div class="controls">
+            <div class="control-panel">
+                <div class="panel-title">𓏞 Choose Operation</div>
+                <div class="operation-grid">
+                    <button class="operation-btn" onclick="selectOperation('add')">Add 𓏲</button>
+                    <button class="operation-btn" onclick="selectOperation('subtract')">Subtract 𓅮</button>
+                    <button class="operation-btn" onclick="selectOperation('multiply')">Multiply 𓏭</button>
+                    <button class="operation-btn" onclick="selectOperation('divide')">Divide 𓎆</button>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <div class="panel-title">𓋹 Choose Term</div>
+                <div class="term-grid" id="termButtons">
+                    <!-- Term buttons will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn apply-btn" onclick="applyOperation()" id="applyBtn" disabled>𓏞 Apply Operation</button>
+            <button class="action-btn hint-btn" onclick="getHint()">𓅓 Use Ancient Scroll</button>
+            <button class="action-btn next-btn" onclick="generateNewEquation()" id="nextBtn" disabled>𓋴 Next Chamber</button>
+        </div>
+
+        <div class="feedback" id="feedback">Begin your journey to uncover mathematical secrets!</div>
+        
+        <div class="steps-container">
+            <div class="steps-title">𓇋𓅱𓃭 Hieroglyphic Solution Steps</div>
+            <div class="steps" id="steps">
+                <div class="step" id="initialStep"><span class="step-number">1</span> Start: <span id="currentEquation">x + 5 = 12</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Game state variables
+    let currentLevel = 1;
+    let score = 0;
+    let streak = 0;
+    let hintsUsed = 0;
+    let step = 1;
+    let correctAnswers = 0;
+    let wrongAttempts = 0;
+    let maxWrongAttempts = 3;
+    let equationSolved = false;
+    let selectedOperation = null;
+    let selectedTerm = null;
+    let currentUser = null;
+    
+    let currentEquation = {
+        left: { coefficient: 1, constant: 5, variable: 'x' },
+        right: { coefficient: 0, constant: 12, variable: null }
+    };
+    
+    let solutionSteps = [];
+    let stepCounter = 1;
+
+    // Progressive ranking system with archaeological theme
+    const ranks = [
+        { name: "𓀀 Apprentice Scribe", min: 0 },
+        { name: "𓀁 Temple Scholar", min: 50 },
+        { name: "𓀂 Hieroglyph Master", min: 150 },
+        { name: "𓀃 Pyramid Architect", min: 300 },
+        { name: "𓀄 High Priest", min: 500 },
+        { name: "𓀅 Pharaoh's Advisor", min: 750 },
+        { name: "𓀆 Guardian of Wisdom", min: 1050 },
+        { name: "𓀇 Living God", min: 1400 },
+        { name: "𓀈 Eternal Pharaoh", min: 1800 }
+    ];
+    
+    // Operation symbols for display
+    const operationSymbols = {
+        'add': 'Add (+)',
+        'subtract': 'Subtract (-)',
+        'multiply': 'Multiply (×)',
+        'divide': 'Divide (÷)'
+    };
+
+    // Login system functions
+    function showRegisterForm() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'flex';
+    }
+
+    function showLoginForm() {
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'flex';
+    }
+
+    function register() {
+        const username = document.getElementById('newUsername').value.trim();
+        const password = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (!username || !password) {
+            alert("Please enter both a scribe name and secret hieroglyph!");
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            alert("Secret hieroglyphs don't match! Try again.");
+            return;
+        }
+        
+        if (password.length < 6) {
+            alert("Secret hieroglyph must be at least 6 symbols long!");
+            return;
+        }
+        
+        // Check if user already exists
+        const userKey = `user_${username}`;
+        if (localStorage.getItem(userKey)) {
+            alert("Scribe name already exists! Choose another.");
+            return;
+        }
+        
+        // Create user account (store in localStorage)
+        localStorage.setItem(userKey, JSON.stringify({
+            password: password, // In a real app, you should hash the password!
+            gameState: {
+                score: 0,
+                streak: 0,
+                hintsUsed: 0,
+                currentLevel: 1,
+                correctAnswers: 0,
+                currentRank: "𓀀 Apprentice Scribe"
+            }
+        }));
+        
+        alert("Account created! You may now enter the temple.");
+        showLoginForm();
+        document.getElementById('username').value = username;
+    }
+
+    function login() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        
+        if (!username || !password) {
+            alert("Please enter both scribe name and secret hieroglyph!");
+            return;
+        }
+        
+        const userKey = `user_${username}`;
+        const userData = JSON.parse(localStorage.getItem(userKey));
+        
+        if (!userData) {
+            alert("Scribe name not found in temple records!");
+            return;
+        }
+        
+        // In a real app, compare hashed passwords
+        if (userData.password !== password) {
+            alert("Incorrect secret hieroglyph! Try again.");
+            return;
+        }
+        
+        // Successful login
+        currentUser = username;
+        
+        // Hide login, show game
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('gameContainer').style.display = 'block';
+        
+        // Load game state
+        loadGameState();
+    }
+
+    function saveGameState() {
+        if (!currentUser) return;
+        
+        const userKey = `user_${currentUser}`;
+        const userData = JSON.parse(localStorage.getItem(userKey));
+        
+        if (userData) {
+            userData.gameState = {
+                score: score,
+                streak: streak,
+                hintsUsed: hintsUsed,
+                currentLevel: currentLevel,
+                correctAnswers: correctAnswers,
+                currentEquation: currentEquation,
+                solutionSteps: solutionSteps,
+                stepCounter: stepCounter,
+                equationSolved: equationSolved
+            };
+            
+            localStorage.setItem(userKey, JSON.stringify(userData));
+        }
+    }
+
+    function loadGameState() {
+        if (!currentUser) return;
+        
+        const userKey = `user_${currentUser}`;
+        const userData = JSON.parse(localStorage.getItem(userKey));
+        
+        if (userData && userData.gameState) {
+            const state = userData.gameState;
+            score = state.score || 0;
+            streak = state.streak || 0;
+            hintsUsed = state.hintsUsed || 0;
+            currentLevel = state.currentLevel || 1;
+            correctAnswers = state.correctAnswers || 0;
+            currentEquation = state.currentEquation || {
+                left: { coefficient: 1, constant: 5, variable: 'x' },
+                right: { coefficient: 0, constant: 12, variable: null }
+            };
+            solutionSteps = state.solutionSteps || [];
+            stepCounter = state.stepCounter || 1;
+            equationSolved = state.equationSolved || false;
+            
+            // Update UI
+            updateDisplay();
+            updateEquationDisplay();
+            updateTermButtons();
+            
+            // Update level buttons
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent.split(':')[0].replace('Level ', '')) === currentLevel) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update solution steps
+            const stepsContainer = document.getElementById('steps');
+            stepsContainer.innerHTML = '';
+            if (solutionSteps.length > 0) {
+                solutionSteps.forEach(step => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'step';
+                    stepDiv.innerHTML = step;
+                    stepsContainer.appendChild(stepDiv);
+                });
+            } else {
+                stepsContainer.innerHTML = `<div class="step"><span class="step-number">1</span> Start: ${formatEquation(currentEquation)}</div>`;
+            }
+            
+            showFeedback(`Welcome back, ${currentUser}! Your journey continues...`, 'success');
+        } else {
+            // Initialize a new game
+            generateNewEquation();
+            showFeedback('Begin your journey to uncover mathematical secrets!', 'success');
+        }
+    }
+
+    function logout() {
+        saveGameState();
+        currentUser = null;
+        document.getElementById('gameContainer').style.display = 'none';
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+    }
+
+    function createSandEffect() {
+        const sandContainer = document.createElement('div');
+        sandContainer.className = 'sand-fall';
+        document.body.appendChild(sandContainer);
+
+        const colors = ['#d4a373', '#bc6c25', '#ffd700', '#e6b17e', '#c1925e'];
+        
+        for (let i = 0; i < 100; i++) {
+            const sandParticle = document.createElement('div');
+            sandParticle.className = 'sand-particle';
+            sandParticle.style.left = Math.random() * 100 + '%';
+            sandParticle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            sandParticle.style.animationDelay = Math.random() * 2 + 's';
+            sandParticle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            sandParticle.style.width = (Math.random() * 6 + 3) + 'px';
+            sandParticle.style.height = sandParticle.style.width;
+            sandContainer.appendChild(sandParticle);
+        }
+
+        // Remove sand after animation
+        setTimeout(() => {
+            document.body.removeChild(sandContainer);
+        }, 5000);
+    }
+
+    function updateDisplay() {
+        document.getElementById('scoreDisplay').textContent = `Treasure: 𓍯 ${score}`;
+        document.getElementById('streakDisplay').textContent = `Wisdom Streak: 𓀠 ${streak}`;
+        document.getElementById('hintsDisplay').textContent = `Scrolls Used: 𓅓 ${hintsUsed}`;
+        
+        // Update rank based on score
+        let currentRank = ranks[0];
+        for (let rank of ranks) {
+            if (score >= rank.min) {
+                currentRank = rank;
+            }
+        }
+        document.getElementById('rankDisplay').textContent = `Rank: ${currentRank.name}`;
+    }
+
+    function setLevel(level) {
+        currentLevel = level;
+        document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        saveGameState();
+        generateNewEquation();
+    }
+
+    function generateEquation(level) {
+        let equation = {};
+        
+        switch(level) {
+            case 1: // One step
+                const operations = ['add', 'subtract', 'multiply', 'divide'];
+                const op = operations[Math.floor(Math.random() * operations.length)];
+                
+                if (op === 'add') {
+                    const constant = Math.floor(Math.random() * 10) + 1;
+                    const result = Math.floor(Math.random() * 20) + constant + 1;
+                    equation = {
+                        left: { coefficient: 1, constant: constant, variable: 'x' },
+                        right: { coefficient: 0, constant: result, variable: null }
+                    };
+                } else if (op === 'subtract') {
+                    const constant = Math.floor(Math.random() * 10) + 1;
+                    const result = Math.floor(Math.random() * 20) + 1;
+                    equation = {
+                        left: { coefficient: 1, constant: -constant, variable: 'x' },
+                        right: { coefficient: 0, constant: result, variable: null }
+                    };
+                } else if (op === 'multiply') {
+                    const coefficient = Math.floor(Math.random() * 9) + 2;
+                    const result = coefficient * (Math.floor(Math.random() * 10) + 1);
+                    equation = {
+                        left: { coefficient: coefficient, constant: 0, variable: 'x' },
+                        right: { coefficient: 0, constant: result, variable: null }
+                    };
+                } else { // divide
+                    const result = Math.floor(Math.random() * 10) + 1;
+                    const divisor = Math.floor(Math.random() * 9) + 2;
+                    equation = {
+                        left: { coefficient: 1/divisor, constant: 0, variable: 'x' },
+                        right: { coefficient: 0, constant: result, variable: null }
+                    };
+                }
+                break;
+                
+            case 2: // Two steps
+                const coeff = Math.floor(Math.random() * 5) + 2;
+                const constant = Math.floor(Math.random() * 10) + 1;
+                const result = coeff * (Math.floor(Math.random() * 10) + 1) + constant;
+                equation = {
+                    left: { coefficient: coeff, constant: constant, variable: 'x' },
+                    right: { coefficient: 0, constant: result, variable: null }
+                };
+                break;
+                
+            case 3: // Variable on both sides
+                const leftCoeff = Math.floor(Math.random() * 5) + 2;
+                const rightCoeff = Math.floor(Math.random() * (leftCoeff - 1)) + 1;
+                const leftConst = Math.floor(Math.random() * 10) + 1;
+                const rightConst = Math.floor(Math.random() * 10) + leftConst + 1;
+                equation = {
+                    left: { coefficient: leftCoeff, constant: leftConst, variable: 'x' },
+                    right: { coefficient: rightCoeff, constant: rightConst, variable: 'x' }
+                };
+                break;
+        }
+        
+        return equation;
+    }
+
+    function formatEquation(eq) {
+        let left = '';
+        let right = '';
+        
+        // Format left side
+        if (eq.left.coefficient !== 0 && eq.left.variable) {
+            if (eq.left.coefficient === 1) {
+                left += eq.left.variable;
+            } else if (eq.left.coefficient === -1) {
+                left += '-' + eq.left.variable;
+            } else if (eq.left.coefficient < 1 && eq.left.coefficient > 0) {
+                left += eq.left.variable + '/' + Math.round(1/eq.left.coefficient);
+            } else {
+                left += eq.left.coefficient + eq.left.variable;
+            }
+        }
+        
+        if (eq.left.constant !== 0) {
+            if (left && eq.left.constant > 0) {
+                left += ' + ' + eq.left.constant;
+            } else if (left && eq.left.constant < 0) {
+                left += ' - ' + Math.abs(eq.left.constant);
+            } else {
+                left += eq.left.constant;
+            }
+        }
+        
+        if (!left) left = '0';
+        
+        // Format right side
+        if (eq.right.coefficient !== 0 && eq.right.variable) {
+            if (eq.right.coefficient === 1) {
+                right += eq.right.variable;
+            } else if (eq.right.coefficient === -1) {
+                right += '-' + eq.right.variable;
+            } else {
+                right += eq.right.coefficient + eq.right.variable;
+            }
+        }
+        
+        if (eq.right.constant !== 0) {
+            if (right && eq.right.constant > 0) {
+                right += ' + ' + eq.right.constant;
+            } else if (right && eq.right.constant < 0) {
+                right += ' - ' + Math.abs(eq.right.constant);
+            } else {
+                right += eq.right.constant;
+            }
+        }
+        
+        if (!right) right = '0';
+        
+        return left + ' = ' + right;
+    }
+
+    function getAvailableTerms(equation) {
+        const terms = new Set();
+        
+        // Add coefficients (including 1 and -1 if there are variables)
+        if (equation.left.coefficient !== 0 && equation.left.variable) {
+            if (equation.left.coefficient >= 1) {
+                terms.add(Math.abs(equation.left.coefficient));
+            }
+            if (equation.left.coefficient !== 1) {
+                terms.add(1);
+            }
+            // For fractions, add the denominator (but not the decimal)
+            if (equation.left.coefficient < 1 && equation.left.coefficient > 0) {
+                terms.add(Math.round(1/equation.left.coefficient));
+            }
+        }
+        if (equation.right.coefficient !== 0 && equation.right.variable) {
+            if (equation.right.coefficient >= 1) {
+                terms.add(Math.abs(equation.right.coefficient));
+            }
+            if (equation.right.coefficient !== 1) {
+                terms.add(1);
+            }
+            // For fractions, add the denominator (but not the decimal)
+            if (equation.right.coefficient < 1 && equation.right.coefficient > 0) {
+                terms.add(Math.round(1/equation.right.coefficient));
+            }
+        }
+        
+        // Add constants
+        if (equation.left.constant !== 0) {
+            terms.add(Math.abs(equation.left.constant));
+        }
+        if (equation.right.constant !== 0) {
+            terms.add(Math.abs(equation.right.constant));
+        }
+        
+        // Add variable if it exists
+        if (equation.left.variable || equation.right.variable) {
+            terms.add('x');
+        }
+        
+        // Add some common solving terms
+        terms.add(1);
+        if (equation.left.coefficient > 1) terms.add(equation.left.coefficient);
+        if (equation.right.coefficient > 1) terms.add(equation.right.coefficient);
+        
+        // Filter out decimals and convert to array
+        return Array.from(terms).filter(term => {
+            if (typeof term === 'string') return true;
+            return Number.isInteger(term);
+        }).sort((a, b) => {
+            if (typeof a === 'string') return 1;
+            if (typeof b === 'string') return -1;
+            return a - b;
+        });
+    }
+
+    function updateTermButtons() {
+        const termGrid = document.getElementById('termButtons');
+        const terms = getAvailableTerms(currentEquation);
+        
+        termGrid.innerHTML = '';
+        terms.forEach(term => {
+            const button = document.createElement('button');
+            button.className = 'term-btn';
+            button.textContent = term;
+            button.onclick = () => selectTerm(term);
+            termGrid.appendChild(button);
+        });
+    }
+
+    function selectOperation(operation) {
+        selectedOperation = operation;
+        document.querySelectorAll('.operation-btn').forEach(btn => btn.classList.remove('selected'));
+        event.target.classList.add('selected');
+        updateApplyButton();
+    }
+
+    function selectTerm(term) {
+        selectedTerm = term;
+        document.querySelectorAll('.term-btn').forEach(btn => btn.classList.remove('selected'));
+        event.target.classList.add('selected');
+        updateApplyButton();
+    }
+
+    function updateApplyButton() {
+        const applyBtn = document.getElementById('applyBtn');
+        applyBtn.disabled = !(selectedOperation && selectedTerm);
+    }
+
+    function isValidMove(operation, term, equation) {
+        // For level 1 (one step), check if this move directly solves
+        if (currentLevel === 1) {
+            if (operation === 'subtract' && term === Math.abs(equation.left.constant) && equation.left.constant > 0) return true;
+            if (operation === 'add' && term === Math.abs(equation.left.constant) && equation.left.constant < 0) return true;
+            if (operation === 'divide' && term === equation.left.coefficient && equation.left.coefficient > 1) return true;
+            if (operation === 'multiply' && equation.left.coefficient < 1 && term === Math.round(1/equation.left.coefficient)) return true;
+        }
+        
+        // For level 2 (two steps), allow moves that simplify the equation
+        if (currentLevel === 2) {
+            // First eliminate the constant, then the coefficient
+            if (equation.left.constant !== 0) {
+                if (operation === 'subtract' && term === Math.abs(equation.left.constant) && equation.left.constant > 0) return true;
+                if (operation === 'add' && term === Math.abs(equation.left.constant) && equation.left.constant < 0) return true;
+            } else if (equation.left.coefficient !== 1) {
+                if (operation === 'divide' && term === equation.left.coefficient) return true;
+                if (operation === 'multiply' && equation.left.coefficient < 1 && term === Math.round(1/equation.left.coefficient)) return true;
+            }
+        }
+        
+        // For level 3 (variables on both sides), allow moves that collect variables or constants
+        if (currentLevel === 3) {
+            // Allow subtracting variables or constants to collect terms
+            if (operation === 'subtract' && term === 'x' && equation.right.coefficient > 0) return true;
+            if (operation === 'subtract' && typeof term === 'number') {
+                if (equation.left.constant > 0 && term === equation.left.constant) return true;
+                if (equation.right.constant > 0 && term === equation.right.constant) return true;
+            }
+            if (operation === 'add' && typeof term === 'number') {
+                if (equation.left.constant < 0 && term === Math.abs(equation.left.constant)) return true;
+                if (equation.right.constant < 0 && term === Math.abs(equation.right.constant)) return true;
+            }
+            // After collecting, allow division
+            if (equation.right.coefficient === 0 && equation.left.coefficient > 1 && operation === 'divide' && term === equation.left.coefficient) return true;
+        }
+        
+        return false;
+    }
+
+    function applyOperation() {
+        if (!selectedOperation || !selectedTerm || equationSolved) return;
+        
+        if (isValidMove(selectedOperation, selectedTerm, currentEquation)) {
+            stepCounter++;
+            
+            // Create step description before applying the operation
+            const operationDesc = operationSymbols[selectedOperation];
+            let stepDescription = `Step ${stepCounter}: ${operationDesc} ${selectedTerm} to both sides`;
+            
+            // Apply the operation to both sides
+            if (selectedOperation === 'add') {
+                if (typeof selectedTerm === 'number') {
+                    currentEquation.left.constant += selectedTerm;
+                    currentEquation.right.constant += selectedTerm;
+                }
+            } else if (selectedOperation === 'subtract') {
+                if (typeof selectedTerm === 'number') {
+                    currentEquation.left.constant -= selectedTerm;
+                    currentEquation.right.constant -= selectedTerm;
+                } else if (selectedTerm === 'x') {
+                    currentEquation.left.coefficient -= currentEquation.right.coefficient;
+                    currentEquation.right.coefficient = 0;
+                }
+            } else if (selectedOperation === 'multiply') {
+                if (typeof selectedTerm === 'number') {
+                    currentEquation.left.coefficient *= selectedTerm;
+                    currentEquation.left.constant *= selectedTerm;
+                    currentEquation.right.coefficient *= selectedTerm;
+                    currentEquation.right.constant *= selectedTerm;
+                }
+            } else if (selectedOperation === 'divide') {
+                if (typeof selectedTerm === 'number' && selectedTerm !== 0) {
+                    currentEquation.left.coefficient /= selectedTerm;
+                    currentEquation.left.constant /= selectedTerm;
+                    currentEquation.right.coefficient /= selectedTerm;
+                    currentEquation.right.constant /= selectedTerm;
+                }
+            }
+            
+            // Format equation after operation
+            const formattedEquation = formatEquation(currentEquation);
+            
+            // Add step to solution history
+            addSolutionStep(stepDescription, formattedEquation);
+            
+            // Check if solved
+            if (Math.abs(currentEquation.left.coefficient - 1) < 0.001 && Math.abs(currentEquation.left.constant) < 0.001 && currentEquation.right.coefficient === 0) {
+                equationSolved = true;
+                
+                // Add celebration effect to equation display
+                const equationDisplay = document.getElementById('equation');
+                equationDisplay.classList.add('equation-solved');
+                setTimeout(() => {
+                    equationDisplay.classList.remove('equation-solved');
+                }, 1500);
+                
+                // Add solution step
+                addSolutionStep(`Solved! x = ${Math.round(currentEquation.right.constant)}`, '', true);
+                
+                // Level-dependent scoring
+                const levelScore = currentLevel * 10;
+                const oldScore = score;
+                score += levelScore;
+                streak++;
+                correctAnswers++;
+                wrongAttempts = 0;
+                
+                // Check for rank up based on score
+                const oldRank = getCurrentRank(oldScore);
+                updateDisplay();
+                const newRank = getCurrentRank(score);
+                
+                if (newRank.name !== oldRank.name) {
+                    createSandEffect();
+                    showFeedback(`𓋹 RANK UP! You are now a ${newRank.name}! (+${levelScore} 𓍯) 𓋹`, 'rank-up');
+                } else {
+                    showFeedback(`𓋴 Solved! The chamber reveals ${levelScore} gold pieces! 𓍯`, 'success');
+                }
+                
+                document.getElementById('nextBtn').disabled = false;
+            } else {
+                showFeedback('𓏞 Well done! The temple walls shift...', 'success');
+            }
+            
+            updateEquationDisplay();
+            updateTermButtons();
+            clearSelections();
+            saveGameState();
+            
+        } else {
+            wrongAttempts++;
+            if (streak > 0) streak--;
+            showFeedback(`𓅮 That move shakes the temple dangerously! (${wrongAttempts}/${maxWrongAttempts})`, 'error');
+            
+            if (wrongAttempts >= maxWrongAttempts) {
+                showFeedback('𓅓 Too many wrong attempts. The chamber seals itself!', 'error');
+                document.getElementById('nextBtn').disabled = false;
+            }
+            
+            updateDisplay();
+            clearSelections();
+            saveGameState();
+        }
+    }
+    
+    function addSolutionStep(action, equation, isSolution = false) {
+        const stepsContainer = document.getElementById('steps');
+        
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'step';
+        
+        if (isSolution) {
+            stepDiv.innerHTML = `
+                <span class="step-number">${stepCounter}</span>
+                <span class="step-action" style="background:#4caf50; color:white;">${action}</span>
+            `;
+            stepDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+            stepDiv.style.borderLeft = '3px solid #4caf50';
+        } else {
+            stepDiv.innerHTML = `
+                <span class="step-number">${stepCounter}</span>
+                ${action}
+                <div style="margin-top:8px; font-size:1.1em; text-align:center; background:rgba(75,55,45,0.5); padding:8px; border-radius:8px;">
+                    <span class="step-action">${equation}</span>
+                </div>
+            `;
+        }
+        
+        stepsContainer.appendChild(stepDiv);
+        solutionSteps.push(stepDiv.outerHTML);
+        
+        // Scroll to the bottom of the steps container
+        stepsContainer.scrollTop = stepsContainer.scrollHeight;
+    }
+
+    function getCurrentRank(scoreToCheck = score) {
+        let currentRank = ranks[0];
+        for (let rank of ranks) {
+            if (scoreToCheck >= rank.min) {
+                currentRank = rank;
+            }
+        }
+        return currentRank;
+    }
+
+    function clearSelections() {
+        selectedOperation = null;
+        selectedTerm = null;
+        document.querySelectorAll('.operation-btn, .term-btn').forEach(btn => btn.classList.remove('selected'));
+        updateApplyButton();
+    }
+
+    function updateEquationDisplay() {
+        document.getElementById('equation').textContent = formatEquation(currentEquation);
+    }
+
+    function getHint() {
+        hintsUsed++;
+        updateDisplay();
+        
+        let hint = '';
+        if (currentLevel === 1) {
+            if (currentEquation.left.constant > 0) {
+                hint = `𓅓 Hieroglyph hint: Subtract ${currentEquation.left.constant} from both sides to isolate x.`;
+            } else if (currentEquation.left.constant < 0) {
+                hint = `𓅓 Hieroglyph hint: Add ${Math.abs(currentEquation.left.constant)} to both sides to isolate x.`;
+            } else if (currentEquation.left.coefficient > 1) {
+                hint = `𓅓 Hieroglyph hint: Divide both sides by ${currentEquation.left.coefficient} to isolate x.`;
+            } else if (currentEquation.left.coefficient < 1) {
+                hint = `𓅓 Hieroglyph hint: Multiply both sides by ${Math.round(1/currentEquation.left.coefficient)} to isolate x.`;
+            }
+        } else if (currentLevel === 2) {
+            if (currentEquation.left.constant !== 0) {
+                if (currentEquation.left.constant > 0) {
+                    hint = `𓅓 Temple wisdom: First subtract ${currentEquation.left.constant} from both sides.`;
+                } else {
+                    hint = `𓅓 Temple wisdom: First add ${Math.abs(currentEquation.left.constant)} to both sides.`;
+                }
+            } else {
+                hint = `𓅓 Temple wisdom: Now divide both sides by ${currentEquation.left.coefficient} to solve for x.`;
+            }
+        } else if (currentLevel === 3) {
+            if (currentEquation.right.coefficient > 0) {
+                hint = `𓅓 Pharaoh's secret: Subtract ${currentEquation.right.coefficient}x from both sides to collect variables.`;
+            } else if (currentEquation.left.constant !== 0 || currentEquation.right.constant !== 0) {
+                if (currentEquation.left.constant > 0) {
+                    hint = `𓅓 Pharaoh's secret: Subtract ${currentEquation.left.constant} from both sides.`;
+                } else if (currentEquation.right.constant > 0) {
+                    hint = `𓅓 Pharaoh's secret: Subtract ${currentEquation.right.constant} from both sides.`;
+                } else {
+                    hint = `𓅓 Pharaoh's secret: Add ${Math.abs(currentEquation.left.constant || currentEquation.right.constant)} to both sides.`;
+                }
+            } else {
+                hint = `𓅓 Pharaoh's secret: Divide both sides by ${currentEquation.left.coefficient} to solve for x.`;
+            }
+        }
+        
+        showFeedback(hint, 'success');
+        saveGameState();
+    }
+
+    function showFeedback(message, type) {
+        const feedback = document.getElementById('feedback');
+        feedback.textContent = message;
+        feedback.className = `feedback ${type}`;
+    }
+
+    function generateNewEquation() {
+        currentEquation = generateEquation(currentLevel);
+        equationSolved = false;
+        wrongAttempts = 0;
+        stepCounter = 1;
+        solutionSteps = [];
+        
+        // Reset solution steps
+        const stepsContainer = document.getElementById('steps');
+        stepsContainer.innerHTML = `<div class="step"><span class="step-number">1</span> Start: ${formatEquation(currentEquation)}</div>`;
+        
+        updateEquationDisplay();
+        updateTermButtons();
+        clearSelections();
+        showFeedback('The chamber reveals a new equation!', 'success');
+        document.getElementById('nextBtn').disabled = true;
+        saveGameState();
+    }
+
+    // Auto-save when closing the page
+    window.addEventListener('beforeunload', () => {
+        saveGameState();
+    });
+
+    // Initialize the login screen
+    showLoginForm();
+    </script>
+</body>
+</html>
