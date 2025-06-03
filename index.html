@@ -80,104 +80,6 @@
         border-radius: 5px;
     }
 
-    /* Login screen styles */
-    .login-container {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        max-width: 500px;
-        background: rgba(60, 42, 33, 0.95);
-        border-radius: 15px;
-        padding: 40px;
-        backdrop-filter: blur(8px);
-        border: 3px solid #d4a373;
-        box-shadow: 0 0 30px rgba(212, 163, 115, 0.5);
-        z-index: 1000;
-        text-align: center;
-    }
-
-    .login-container h2 {
-        font-size: 2.5em;
-        margin-bottom: 30px;
-        color: #ffd700;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    }
-
-    .login-form {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .input-group {
-        position: relative;
-    }
-
-    .input-group i {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #d4a373;
-        font-size: 1.2rem;
-    }
-
-    .input-group input {
-        width: 100%;
-        padding: 15px 15px 15px 45px;
-        background: rgba(40, 28, 21, 0.8);
-        border: 2px solid #d4a373;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        color: #e6d5b8;
-        transition: all 0.3s ease;
-    }
-
-    .input-group input:focus {
-        outline: none;
-        border-color: #ffd700;
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-    }
-
-    .login-btn {
-        padding: 15px;
-        border: none;
-        border-radius: 12px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        cursor: pointer;
-        background: linear-gradient(45deg, #d4a373, #bc6c25);
-        color: #1a120b;
-        border: 2px solid #ffd700;
-        transition: all 0.3s ease;
-        margin-top: 10px;
-    }
-
-    .login-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(212, 163, 115, 0.5);
-    }
-
-    .toggle-form {
-        margin-top: 20px;
-        color: #e6d5b8;
-        font-size: 1rem;
-    }
-
-    .toggle-form a {
-        color: #ffd700;
-        text-decoration: none;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .toggle-form a:hover {
-        text-decoration: underline;
-    }
-
-    /* Game container */
     .container {
         max-width: 1000px;
         margin: 40px auto;
@@ -189,7 +91,6 @@
         box-shadow: 0 0 30px rgba(212, 163, 115, 0.3);
         position: relative;
         z-index: 2;
-        display: none; /* Hidden by default */
     }
 
     .hieroglyph-border {
@@ -771,51 +672,7 @@
     <div class="pillar pillar-left"></div>
     <div class="pillar pillar-right"></div>
     
-    <!-- Login Screen -->
-    <div class="login-container" id="loginContainer">
-        <h2>𓋴𓄿𓏏𓏭𓀭 Ancient Math Temple 𓋴𓄿𓏏𓏭𓀭</h2>
-        
-        <!-- Login Form -->
-        <div class="login-form" id="loginForm">
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="username" placeholder="Scribe Name" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="password" placeholder="Secret Hieroglyph" required>
-            </div>
-            <button class="login-btn" onclick="login()">Enter the Temple</button>
-            
-            <div class="toggle-form">
-                Don't have an account? <a onclick="showRegisterForm()">Create one</a>
-            </div>
-        </div>
-        
-        <!-- Register Form -->
-        <div class="login-form" id="registerForm" style="display:none;">
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="newUsername" placeholder="Choose Scribe Name" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="newPassword" placeholder="Create Secret Hieroglyph" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="confirmPassword" placeholder="Confirm Secret Hieroglyph" required>
-            </div>
-            <button class="login-btn" onclick="register()">Create Account</button>
-            
-            <div class="toggle-form">
-                Already have an account? <a onclick="showLoginForm()">Login</a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Game Container -->
-    <div class="container" id="gameContainer">
+    <div class="container">
         <div class="hieroglyph-border border-top"></div>
         <div class="hieroglyph-border border-bottom"></div>
         
@@ -860,7 +717,6 @@
             <button class="action-btn apply-btn" onclick="applyOperation()" id="applyBtn" disabled>𓏞 Apply Operation</button>
             <button class="action-btn hint-btn" onclick="getHint()">𓅓 Use Ancient Scroll</button>
             <button class="action-btn next-btn" onclick="generateNewEquation()" id="nextBtn" disabled>𓋴 Next Chamber</button>
-            <button class="action-btn" onclick="logout()" style="background: linear-gradient(45deg, #6c757d, #495057);">Log Out</button>
         </div>
 
         <div class="feedback" id="feedback">Begin your journey to uncover mathematical secrets!</div>
@@ -874,7 +730,6 @@
     </div>
 
     <script>
-    // Game state variables
     let currentLevel = 1;
     let score = 0;
     let streak = 0;
@@ -884,9 +739,9 @@
     let wrongAttempts = 0;
     let maxWrongAttempts = 3;
     let equationSolved = false;
+    
     let selectedOperation = null;
     let selectedTerm = null;
-    let currentUser = null;
     
     let currentEquation = {
         left: { coefficient: 1, constant: 5, variable: 'x' },
@@ -916,238 +771,6 @@
         'multiply': 'Multiply (×)',
         'divide': 'Divide (÷)'
     };
-
-    // JSONBin.io configuration for global storage
-    const BIN_ID = '6632f0aee41b4d34e4f5f8f4';
-    const MASTER_KEY = '$2a$10$wj5Q2fqN9c8Yfq4w0d1H/.Bc9O4sJ0HdQ7sJ0zFdS9v8kLqYrXv6G';
-    let globalUsers = {};
-
-    // Initialize global storage
-    async function initGlobalStorage() {
-        try {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: {
-                    'X-Master-Key': MASTER_KEY,
-                    'X-Bin-Meta': false
-                }
-            });
-            
-            if (!response.ok) throw new Error('Failed to fetch data');
-            
-            const data = await response.json();
-            globalUsers = data || {};
-        } catch (error) {
-            console.error('Error initializing global storage:', error);
-            showFeedback('𓅓 Connection to Ancient Archives failed. Using local storage.', 'error');
-            // Try to load from localStorage as fallback
-            const localData = localStorage.getItem('globalUsers');
-            globalUsers = localData ? JSON.parse(localData) : {};
-        }
-    }
-
-    // Save to global storage
-    async function saveToGlobalStorage() {
-        try {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': MASTER_KEY
-                },
-                body: JSON.stringify(globalUsers)
-            });
-            
-            if (!response.ok) throw new Error('Failed to save data');
-            
-            // Also save to localStorage as fallback
-            localStorage.setItem('globalUsers', JSON.stringify(globalUsers));
-            return true;
-        } catch (error) {
-            console.error('Error saving to global storage:', error);
-            // Fallback to localStorage
-            localStorage.setItem('globalUsers', JSON.stringify(globalUsers));
-            return false;
-        }
-    }
-
-    // Login system functions
-    function showRegisterForm() {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('registerForm').style.display = 'flex';
-    }
-
-    function showLoginForm() {
-        document.getElementById('registerForm').style.display = 'none';
-        document.getElementById('loginForm').style.display = 'flex';
-    }
-
-    async function register() {
-        const username = document.getElementById('newUsername').value.trim();
-        const password = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        
-        if (!username || !password) {
-            showFeedback("𓅮 Please enter both a scribe name and secret hieroglyph!", 'error');
-            return;
-        }
-        
-        if (password !== confirmPassword) {
-            showFeedback("𓅮 Secret hieroglyphs don't match! Try again.", 'error');
-            return;
-        }
-        
-        if (password.length < 6) {
-            showFeedback("𓅮 Secret hieroglyph must be at least 6 symbols long!", 'error');
-            return;
-        }
-        
-        // Check if user already exists
-        if (globalUsers[username]) {
-            showFeedback("𓅮 Scribe name already exists! Choose another.", 'error');
-            return;
-        }
-        
-        // Create user account
-        globalUsers[username] = {
-            password: password, // In a real app, you should hash the password!
-            gameState: {
-                score: 0,
-                streak: 0,
-                hintsUsed: 0,
-                currentLevel: 1,
-                correctAnswers: 0,
-                currentRank: "𓀀 Apprentice Scribe"
-            }
-        };
-        
-        // Save to global storage
-        const saveResult = await saveToGlobalStorage();
-        
-        if (saveResult) {
-            showFeedback("𓋹 Account created! You may now enter the temple.", 'success');
-        } else {
-            showFeedback("𓋹 Account created! (Saved locally)", 'success');
-        }
-        
-        showLoginForm();
-        document.getElementById('username').value = username;
-    }
-
-    async function login() {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-        
-        if (!username || !password) {
-            showFeedback("𓅮 Please enter both scribe name and secret hieroglyph!", 'error');
-            return;
-        }
-        
-        // Check if user exists
-        if (!globalUsers[username]) {
-            showFeedback("𓅮 Scribe name not found in temple records!", 'error');
-            return;
-        }
-        
-        // Check password
-        if (globalUsers[username].password !== password) {
-            showFeedback("𓅮 Incorrect secret hieroglyph! Try again.", 'error');
-            return;
-        }
-        
-        // Successful login
-        currentUser = username;
-        
-        // Hide login, show game
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('gameContainer').style.display = 'block';
-        
-        // Load game state
-        loadGameState();
-    }
-
-    function loadGameState() {
-        if (!currentUser || !globalUsers[currentUser]) return;
-        
-        const userData = globalUsers[currentUser];
-        
-        if (userData.gameState) {
-            const state = userData.gameState;
-            score = state.score || 0;
-            streak = state.streak || 0;
-            hintsUsed = state.hintsUsed || 0;
-            currentLevel = state.currentLevel || 1;
-            correctAnswers = state.correctAnswers || 0;
-            currentEquation = state.currentEquation || {
-                left: { coefficient: 1, constant: 5, variable: 'x' },
-                right: { coefficient: 0, constant: 12, variable: null }
-            };
-            solutionSteps = state.solutionSteps || [];
-            stepCounter = state.stepCounter || 1;
-            equationSolved = state.equationSolved || false;
-            
-            // Update UI
-            updateDisplay();
-            updateEquationDisplay();
-            updateTermButtons();
-            
-            // Update level buttons
-            document.querySelectorAll('.level-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (parseInt(btn.textContent.split(':')[0].replace('Level ', '')) === currentLevel) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            // Update solution steps
-            const stepsContainer = document.getElementById('steps');
-            stepsContainer.innerHTML = '';
-            if (solutionSteps.length > 0) {
-                solutionSteps.forEach(step => {
-                    const stepDiv = document.createElement('div');
-                    stepDiv.className = 'step';
-                    stepDiv.innerHTML = step;
-                    stepsContainer.appendChild(stepDiv);
-                });
-            } else {
-                stepsContainer.innerHTML = `<div class="step"><span class="step-number">1</span> Start: ${formatEquation(currentEquation)}</div>`;
-            }
-            
-            showFeedback(`𓋹 Welcome back, ${currentUser}! Your journey continues...`, 'success');
-        } else {
-            // Initialize a new game
-            generateNewEquation();
-            showFeedback('Begin your journey to uncover mathematical secrets!', 'success');
-        }
-    }
-
-    async function saveGameState() {
-        if (!currentUser || !globalUsers[currentUser]) return;
-        
-        // Update game state
-        globalUsers[currentUser].gameState = {
-            score: score,
-            streak: streak,
-            hintsUsed: hintsUsed,
-            currentLevel: currentLevel,
-            correctAnswers: correctAnswers,
-            currentEquation: currentEquation,
-            solutionSteps: solutionSteps,
-            stepCounter: stepCounter,
-            equationSolved: equationSolved
-        };
-        
-        // Save to global storage
-        await saveToGlobalStorage();
-    }
-
-    async function logout() {
-        await saveGameState();
-        currentUser = null;
-        document.getElementById('gameContainer').style.display = 'none';
-        document.getElementById('loginContainer').style.display = 'block';
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
-    }
 
     function createSandEffect() {
         const sandContainer = document.createElement('div');
@@ -1193,7 +816,6 @@
         currentLevel = level;
         document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
-        saveGameState();
         generateNewEquation();
     }
 
@@ -1535,7 +1157,6 @@
             updateEquationDisplay();
             updateTermButtons();
             clearSelections();
-            saveGameState();
             
         } else {
             wrongAttempts++;
@@ -1549,7 +1170,6 @@
             
             updateDisplay();
             clearSelections();
-            saveGameState();
         }
     }
     
@@ -1577,7 +1197,6 @@
         }
         
         stepsContainer.appendChild(stepDiv);
-        solutionSteps.push(stepDiv.outerHTML);
         
         // Scroll to the bottom of the steps container
         stepsContainer.scrollTop = stepsContainer.scrollHeight;
@@ -1646,7 +1265,6 @@
         }
         
         showFeedback(hint, 'success');
-        saveGameState();
     }
 
     function showFeedback(message, type) {
@@ -1660,9 +1278,9 @@
         equationSolved = false;
         wrongAttempts = 0;
         stepCounter = 1;
-        solutionSteps = [];
         
         // Reset solution steps
+        solutionSteps = [];
         const stepsContainer = document.getElementById('steps');
         stepsContainer.innerHTML = `<div class="step"><span class="step-number">1</span> Start: ${formatEquation(currentEquation)}</div>`;
         
@@ -1671,14 +1289,12 @@
         clearSelections();
         showFeedback('The chamber reveals a new equation!', 'success');
         document.getElementById('nextBtn').disabled = true;
-        saveGameState();
     }
 
     // Initialize the game
-    (async function() {
-        await initGlobalStorage();
-        showLoginForm();
-    })();
+    updateDisplay();
+    updateEquationDisplay();
+    updateTermButtons();
     </script>
 </body>
 </html>
